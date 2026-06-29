@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weird — UX Designer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --sage-deep: #3D4A3E;
+    --sage-mid: #6B7D6C;
+    --sage-light: #A8B9A9;
+    --sage-pale: #D4DDD5;
+    --sage-bg: #E8EEE9;
+    --near-black: #1A1F1A;
+    --off-white: #F2F5F2;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background-color: var(--sage-bg);
+    color: var(--near-black);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 48px;
+    background: transparent;
+    mix-blend-mode: normal;
+  }
+
+  .nav-logo {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--near-black);
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--sage-deep);
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    height: 18px;
+  }
+
+  /* LETTER FLIP EFFECT */
+  .nav-links a .label-default,
+  .nav-links a .label-hover {
+    display: block;
+    transition: transform 0.35s cubic-bezier(0.76, 0, 0.24, 1);
+    transform-origin: center bottom;
+    transform-style: preserve-3d;
+  }
+
+  .nav-links a .label-hover {
+    position: absolute;
+    top: 0; left: 0;
+    transform: rotateX(90deg) translateY(-100%);
+    transform-origin: center top;
+  }
+
+  .nav-links a:hover .label-default {
+    transform: rotateX(-90deg) translateY(100%);
+    transform-origin: center bottom;
+  }
+
+  .nav-links a:hover .label-hover {
+    transform: rotateX(0deg) translateY(0%);
+    transform-origin: center top;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 0 48px;
+    gap: 0;
+    position: relative;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(107,125,108,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-left {
+    padding-right: 40px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--sage-mid);
+    margin-bottom: 24px;
+    font-weight: 400;
+  }
+
+  .hero-title {
+    font-size: clamp(80px, 10vw, 140px);
+    font-weight: 700;
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+    color: var(--near-black);
+    margin-bottom: 32px;
+  }
+
+  .hero-name {
+    font-size: 18px;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    color: var(--sage-deep);
+    margin-bottom: 20px;
+  }
+
+  .hero-tagline {
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--sage-mid);
+    max-width: 400px;
+    margin-bottom: 48px;
+    font-weight: 300;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  /* FLIP BUTTON */
+  .btn-flip {
+    display: inline-block;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 14px 32px;
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.3s;
+  }
+
+  .btn-flip-primary {
+    background: var(--near-black);
+    color: var(--sage-bg);
+    border: 1.5px solid var(--near-black);
+  }
+
+  .btn-flip-secondary {
+    background: transparent;
+    color: var(--near-black);
+    border: 1.5px solid var(--sage-light);
+  }
+
+  .btn-flip .label-default,
+  .btn-flip .label-hover {
+    display: block;
+    transition: transform 0.4s cubic-bezier(0.76, 0, 0.24, 1);
+  }
+
+  .btn-flip .label-hover {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, 200%) rotateX(90deg);
+    transform-origin: center top;
+    white-space: nowrap;
+  }
+
+  .btn-flip:hover .label-default {
+    transform: translateY(-200%) rotateX(-90deg);
+    transform-origin: center bottom;
+  }
+
+  .btn-flip:hover .label-hover {
+    transform: translate(-50%, -50%) rotateX(0deg);
+  }
+
+  .btn-flip-secondary:hover {
+    border-color: var(--near-black);
+  }
+
+  /* HERO RIGHT - PHOTO */
+  .hero-right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .photo-frame {
+    width: clamp(280px, 35vw, 440px);
+    aspect-ratio: 3/4;
+    background: var(--near-black);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .photo-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    filter: grayscale(20%) contrast(1.05);
+    display: block;
+  }
+
+  .photo-frame-border {
+    position: absolute;
+    inset: -8px;
+    border: 1px solid var(--sage-pale);
+    pointer-events: none;
+  }
+
+  .photo-label {
+    position: absolute;
+    bottom: -32px;
+    right: 0;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--sage-light);
+    font-weight: 400;
+  }
+
+  /* SCROLL INDICATOR */
+  .scroll-hint {
+    position: absolute;
+    bottom: 36px;
+    left: 48px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--sage-mid);
+  }
+
+  .scroll-hint::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--sage-light);
+  }
+
+  /* ABOUT SECTION */
+  section {
+    padding: 120px 48px;
+  }
+
+  .section-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--sage-light);
+    margin-bottom: 48px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .section-eyebrow::before {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 1px;
+    background: var(--sage-pale);
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .about-heading {
+    font-size: clamp(32px, 4vw, 52px);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--near-black);
+  }
+
+  .about-text {
+    font-size: 16px;
+    line-height: 1.85;
+    color: var(--sage-mid);
+    margin-bottom: 24px;
+    font-weight: 300;
+  }
+
+  .about-text strong {
+    color: var(--sage-deep);
+    font-weight: 500;
+  }
+
+  /* SKILLS */
+  .skills-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 40px;
+  }
+
+  .skill-tag {
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 8px 18px;
+    border: 1px solid var(--sage-pale);
+    color: var(--sage-deep);
+    font-weight: 400;
+    border-radius: 1px;
+  }
+
+  /* DIVIDER */
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: var(--sage-pale);
+    margin: 0 48px;
+    width: calc(100% - 96px);
+  }
+
+  /* WORKS */
+  .works-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin-top: 60px;
+  }
+
+  .work-card {
+    background: var(--sage-pale);
+    aspect-ratio: 4/3;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .work-card:first-child {
+    grid-column: 1 / -1;
+    aspect-ratio: 16/7;
+  }
+
+  .work-card-inner {
+    position: absolute;
+    inset: 0;
+    background: var(--near-black);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 32px;
+    transform: translateY(100%);
+    transition: transform 0.5s cubic-bezier(0.76, 0, 0.24, 1);
+  }
+
+  .work-card:hover .work-card-inner {
+    transform: translateY(0);
+  }
+
+  .work-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .work-placeholder-text {
+    font-size: clamp(48px, 6vw, 80px);
+    font-weight: 700;
+    color: var(--sage-light);
+    opacity: 0.3;
+    letter-spacing: -0.03em;
+  }
+
+  .work-number {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--sage-light);
+    margin-bottom: 8px;
+  }
+
+  .work-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--off-white);
+    margin-bottom: 8px;
+  }
+
+  .work-desc {
+    font-size: 13px;
+    color: var(--sage-light);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  /* CONTACT */
+  .contact-section {
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 120px 48px;
+    background: var(--near-black);
+    color: var(--off-white);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .contact-section::before {
+    content: 'WEIRD';
+    position: absolute;
+    right: -40px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: clamp(120px, 18vw, 220px);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    color: rgba(168,185,169,0.04);
+    pointer-events: none;
+    white-space: nowrap;
+    line-height: 1;
+  }
+
+  .contact-heading {
+    font-size: clamp(36px, 5vw, 72px);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-bottom: 32px;
+    color: var(--off-white);
+  }
+
+  .contact-heading span {
+    color: var(--sage-mid);
+  }
+
+  .contact-email {
+    font-size: clamp(20px, 3vw, 36px);
+    font-weight: 300;
+    letter-spacing: 0.02em;
+    color: var(--sage-light);
+    text-decoration: none;
+    border-bottom: 1px solid var(--sage-deep);
+    padding-bottom: 4px;
+    display: inline-block;
+    margin-bottom: 60px;
+    transition: color 0.3s, border-color 0.3s;
+  }
+
+  .contact-email:hover {
+    color: var(--off-white);
+    border-color: var(--sage-light);
+  }
+
+  .contact-links {
+    display: flex;
+    gap: 32px;
+  }
+
+  .contact-link {
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--sage-mid);
+    text-decoration: none;
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    height: 16px;
+    transition: color 0.3s;
+  }
+
+  .contact-link:hover {
+    color: var(--sage-light);
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--near-black);
+    padding: 24px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(168,185,169,0.08);
+  }
+
+  footer p {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--sage-deep);
+  }
+
+  /* RIPPLE BG */
+  .ripple-bg {
+    position: absolute;
+    top: 50%;
+    left: 30%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    opacity: 0.4;
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 20px 24px; }
+    .hero { grid-template-columns: 1fr; padding: 100px 24px 60px; gap: 48px; min-height: auto; }
+    .hero-left { padding-right: 0; }
+    .photo-frame { width: 100%; max-width: 320px; aspect-ratio: 3/4; }
+    section { padding: 80px 24px; }
+    .about-grid { grid-template-columns: 1fr; gap: 40px; }
+    .works-grid { grid-template-columns: 1fr; }
+    .work-card:first-child { grid-column: 1; aspect-ratio: 4/3; }
+    .contact-section { padding: 80px 24px; }
+    footer { padding: 20px 24px; flex-direction: column; gap: 8px; text-align: center; }
+    .divider { margin: 0 24px; width: calc(100% - 48px); }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-logo">Weird</a>
+  <ul class="nav-links">
+    <li><a href="#about">
+      <span class="label-default">About</span>
+      <span class="label-hover">About</span>
+    </a></li>
+    <li><a href="#works">
+      <span class="label-default">Works</span>
+      <span class="label-hover">Works</span>
+    </a></li>
+    <li><a href="#contact">
+      <span class="label-default">Contact</span>
+      <span class="label-hover">Contact</span>
+    </a></li>
+  </ul>
+</nav>
+
+<main>
+  <!-- HERO -->
+  <section class="hero" style="padding-top: 0; padding-bottom: 0;">
+    <svg class="ripple-bg" width="500" height="500" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="250" cy="250" r="60" stroke="#6B7D6C" stroke-width="0.5" opacity="0.3"/>
+      <circle cx="250" cy="250" r="100" stroke="#6B7D6C" stroke-width="0.5" opacity="0.25"/>
+      <circle cx="250" cy="250" r="140" stroke="#6B7D6C" stroke-width="0.5" opacity="0.2"/>
+      <circle cx="250" cy="250" r="180" stroke="#6B7D6C" stroke-width="0.5" opacity="0.15"/>
+      <circle cx="250" cy="250" r="220" stroke="#6B7D6C" stroke-width="0.5" opacity="0.1"/>
+    </svg>
+
+    <div class="hero-left">
+      <p class="hero-eyebrow">UX/UI Designer · Kyiv</p>
+      <h1 class="hero-title">WEIRD</h1>
+      <p class="hero-name">— finding patterns</p>
+      <p class="hero-tagline">
+        I look for patterns where others see just colors and buttons: I study why some solutions go unnoticed while others turn an ordinary interface into a seamless experience.
+      </p>
+      <div class="hero-cta">
+        <a href="#works" class="btn-flip btn-flip-primary">
+          <span class="label-default">View Works</span>
+          <span class="label-hover">View Works</span>
+        </a>
+        <a href="#contact" class="btn-flip btn-flip-secondary">
+          <span class="label-default">Get in Touch</span>
+          <span class="label-hover">Get in Touch</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div style="position: relative;">
+        <div class="photo-frame">
+          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='440' height='580' viewBox='0 0 440 580'%3E%3Crect width='440' height='580' fill='%231A1F1A'/%3E%3Ctext x='50%25' y='45%25' text-anchor='middle' dy='.3em' font-family='Space Grotesk, sans-serif' font-size='64' font-weight='700' fill='%236B7D6C' opacity='0.3'%3EPHOTO%3C/text%3E%3Ctext x='50%25' y='57%25' text-anchor='middle' dy='.3em' font-family='Space Grotesk, sans-serif' font-size='13' fill='%23A8B9A9' opacity='0.5' letter-spacing='3'%3EYOUR PHOTO HERE%3C/text%3E%3C/svg%3E" alt="Weird — UX Designer" id="profile-photo">
+          <div class="photo-frame-border"></div>
+        </div>
+        <span class="photo-label">UX / UI · 2024–25</span>
+      </div>
+    </div>
+
+    <div class="scroll-hint">Scroll to explore</div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-eyebrow">About</div>
+    <div class="about-grid">
+      <h2 class="about-heading">Design is not about beauty.<br>It's about clarity.</h2>
+      <div>
+        <p class="about-text">
+          I approach UX as a research practice: first I understand, then I design. A background in psychology helps me see <strong>behavioral patterns</strong> rather than just moving elements around a screen.
+        </p>
+        <p class="about-text">
+          What fascinates me is the moment when an interface <strong>disappears</strong> — when a person simply does what they came to do without ever noticing the design. That's the goal.
+        </p>
+        <div class="skills-row">
+          <span class="skill-tag">UX Research</span>
+          <span class="skill-tag">UI Design</span>
+          <span class="skill-tag">Figma</span>
+          <span class="skill-tag">Usability Testing</span>
+          <span class="skill-tag">Prototyping</span>
+          <span class="skill-tag">Psychology</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- WORKS -->
+  <section id="works">
+    <div class="section-eyebrow">Works</div>
+    <div class="works-grid">
+      <a href="odessa-tour.html" class="work-card" style="text-decoration:none; display:block;">
+        <div class="work-placeholder">
+          <span class="work-placeholder-text">01</span>
+        </div>
+        <div class="work-card-inner">
+          <p class="work-number">Case — 01</p>
+          <h3 class="work-title">Odessa Tour</h3>
+          <p class="work-desc">Tourism Website · UX Research · UI Design · 2025</p>
+        </div>
+      </a>
+      <a href="guitar-shop.html" class="work-card" style="text-decoration:none; display:block;">
+        <div class="work-placeholder">
+          <span class="work-placeholder-text">02</span>
+        </div>
+        <div class="work-card-inner">
+          <p class="work-number">Case — 02</p>
+          <h3 class="work-title">Guitar Shop</h3>
+          <p class="work-desc">E-commerce · Usability Testing · Redesign · 2025</p>
+        </div>
+      </a>
+      <div class="work-card" style="opacity: 0.5; cursor: default;">
+        <div class="work-placeholder">
+          <span class="work-placeholder-text">03</span>
+        </div>
+        <div class="work-card-inner">
+          <p class="work-number">Coming Soon</p>
+          <h3 class="work-title">Next Project</h3>
+          <p class="work-desc">Work in progress · 2025</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <div class="contact-section" id="contact">
+    <div class="section-eyebrow" style="color: var(--sage-deep);">Contact</div>
+    <h2 class="contact-heading">Got an idea?<br><span>Let's talk.</span></h2>
+    <a href="mailto:nikmelnik800@gmail.com" class="contact-email">nikmelnik800@gmail.com</a>
+    <div class="contact-links">
+      <a href="https://instagram.com/maestronickyy" target="_blank" class="contact-link">Instagram</a>
+      <a href="https://t.me/gluho1" target="_blank" class="contact-link">Telegram</a>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2025 Weird</p>
+    <p>UX/UI Designer · Kyiv</p>
+  </footer>
+</main>
+
+</body>
+</html>

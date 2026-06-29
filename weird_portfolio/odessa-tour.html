@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Odessa Tour — Case Study · Weird</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --sage-deep: #3D4A3E;
+    --sage-mid: #6B7D6C;
+    --sage-light: #A8B9A9;
+    --sage-pale: #D4DDD5;
+    --sage-bg: #E8EEE9;
+    --near-black: #1A1F1A;
+    --off-white: #F2F5F2;
+    --accent: #5C7A5D;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background-color: var(--sage-bg);
+    color: var(--near-black);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 48px;
+    background: rgba(232,238,233,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s;
+  }
+
+  nav.scrolled { border-bottom-color: var(--sage-pale); }
+
+  .nav-logo {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--near-black);
+    text-decoration: none;
+  }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+  }
+
+  .nav-back {
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--sage-mid);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.3s;
+  }
+
+  .nav-back:hover { color: var(--near-black); }
+
+  .nav-back::before {
+    content: '←';
+    font-size: 14px;
+  }
+
+  /* HERO */
+  .case-hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 48px 80px;
+    position: relative;
+    overflow: hidden;
+    background: var(--near-black);
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 70% 40%, rgba(92,122,93,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse at 20% 80%, rgba(61,74,62,0.2) 0%, transparent 50%);
+  }
+
+  /* Illustrated Odessa background: column + sea */
+  .hero-illustration {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.08;
+    pointer-events: none;
+  }
+
+  .case-meta-row {
+    display: flex;
+    gap: 48px;
+    margin-bottom: 32px;
+    position: relative;
+    z-index: 2;
+    flex-wrap: wrap;
+  }
+
+  .case-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .case-meta-label {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--sage-mid);
+  }
+
+  .case-meta-value {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--sage-light);
+    letter-spacing: 0.04em;
+  }
+
+  .case-number {
+    position: absolute;
+    top: 120px;
+    right: 48px;
+    font-size: clamp(100px, 15vw, 180px);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: rgba(168,185,169,0.05);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .case-hero-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--sage-mid);
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .case-hero-title {
+    font-size: clamp(48px, 7vw, 100px);
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    color: var(--off-white);
+    margin-bottom: 24px;
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+  }
+
+  .case-hero-subtitle {
+    font-size: 18px;
+    font-weight: 300;
+    line-height: 1.6;
+    color: var(--sage-light);
+    max-width: 560px;
+    position: relative;
+    z-index: 2;
+    margin-bottom: 48px;
+  }
+
+  /* SCROLL HINT */
+  .scroll-hint {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--sage-deep);
+    position: relative;
+    z-index: 2;
+  }
+
+  .scroll-hint::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--sage-deep);
+  }
+
+  /* SECTIONS */
+  .section {
+    padding: 100px 48px;
+  }
+
+  .section-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--sage-light);
+    margin-bottom: 48px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .section-eyebrow::before {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 1px;
+    background: var(--sage-pale);
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--sage-pale);
+    margin: 0 48px;
+  }
+
+  /* OVERVIEW GRID */
+  .overview-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .overview-left h2 {
+    font-size: clamp(28px, 3.5vw, 44px);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--near-black);
+    margin-bottom: 24px;
+  }
+
+  .overview-left p {
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--sage-mid);
+    font-weight: 300;
+  }
+
+  .overview-right p {
+    font-size: 16px;
+    line-height: 1.85;
+    color: var(--sage-mid);
+    font-weight: 300;
+    margin-bottom: 20px;
+  }
+
+  .overview-right p strong {
+    color: var(--sage-deep);
+    font-weight: 500;
+  }
+
+  /* STATS ROW */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    margin-top: 80px;
+  }
+
+  .stat-card {
+    background: var(--near-black);
+    padding: 40px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .stat-number {
+    font-size: clamp(36px, 4vw, 56px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--sage-light);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--sage-deep);
+    font-weight: 400;
+    margin-top: 4px;
+  }
+
+  /* PROCESS */
+  .process-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-top: 60px;
+  }
+
+  .process-card {
+    background: var(--off-white);
+    padding: 48px 36px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+
+  .process-card:hover { background: var(--sage-pale); }
+
+  .process-card-num {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--sage-light);
+    margin-bottom: 32px;
+  }
+
+  .process-card-title {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--near-black);
+    margin-bottom: 16px;
+    line-height: 1.2;
+  }
+
+  .process-card-text {
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--sage-mid);
+    font-weight: 300;
+  }
+
+  .process-card-icon {
+    position: absolute;
+    bottom: 32px;
+    right: 32px;
+    font-size: 36px;
+    opacity: 0.15;
+  }
+
+  /* SCREENS MOCKUP */
+  .screens-section {
+    background: var(--near-black);
+    padding: 100px 48px;
+  }
+
+  .screens-section .section-eyebrow { color: var(--sage-deep); }
+  .screens-section .section-eyebrow::before { background: var(--sage-deep); }
+
+  .screens-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 16px;
+    margin-top: 60px;
+  }
+
+  .screen-card {
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .screen-card-main { grid-row: span 2; }
+
+  .screen-mock {
+    width: 100%;
+    background: #2A332B;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .screen-mock-bar {
+    height: 28px;
+    background: #1F261F;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 6px;
+  }
+
+  .screen-mock-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .screen-mock-body {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .mock-hero-img {
+    width: 100%;
+    background: linear-gradient(135deg, #3D4A3E 0%, #5C7A5D 50%, #2A332B 100%);
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(168,185,169,0.3);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .mock-nav-row {
+    display: flex;
+    gap: 8px;
+  }
+
+  .mock-nav-item {
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(168,185,169,0.15);
+  }
+
+  .mock-heading {
+    height: 14px;
+    border-radius: 3px;
+    background: rgba(242,245,242,0.7);
+    width: 70%;
+  }
+
+  .mock-text-line {
+    height: 7px;
+    border-radius: 3px;
+    background: rgba(168,185,169,0.2);
+  }
+
+  .mock-card-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .mock-card {
+    background: rgba(168,185,169,0.08);
+    border-radius: 3px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .mock-card-img {
+    width: 100%;
+    border-radius: 2px;
+    background: linear-gradient(135deg, #4A5E4B, #6B7D6C);
+  }
+
+  .mock-card-line {
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(168,185,169,0.25);
+  }
+
+  .mock-btn {
+    height: 28px;
+    border-radius: 2px;
+    background: #5C7A5D;
+    width: 120px;
+    margin-top: 4px;
+  }
+
+  .screen-label {
+    position: absolute;
+    bottom: 12px;
+    left: 16px;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--sage-mid);
+  }
+
+  /* INSIGHTS */
+  .insights-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin-top: 60px;
+  }
+
+  .insight-card {
+    background: var(--off-white);
+    padding: 48px;
+    transition: background 0.3s;
+  }
+
+  .insight-card:hover { background: var(--sage-pale); }
+
+  .insight-tag {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border: 1px solid var(--sage-pale);
+    color: var(--sage-mid);
+    margin-bottom: 24px;
+    border-radius: 1px;
+  }
+
+  .insight-title {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    color: var(--near-black);
+    margin-bottom: 12px;
+  }
+
+  .insight-text {
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--sage-mid);
+    font-weight: 300;
+  }
+
+  /* RESULT */
+  .result-section {
+    padding: 100px 48px;
+    background: var(--sage-deep);
+    color: var(--off-white);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .result-section::before {
+    content: 'RESULT';
+    position: absolute;
+    right: -20px;
+    bottom: -20px;
+    font-size: clamp(80px, 12vw, 160px);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    color: rgba(255,255,255,0.03);
+    pointer-events: none;
+    line-height: 1;
+  }
+
+  .result-section .section-eyebrow { color: rgba(168,185,169,0.5); }
+  .result-section .section-eyebrow::before { background: rgba(168,185,169,0.2); }
+
+  .result-text {
+    font-size: clamp(22px, 3vw, 36px);
+    font-weight: 300;
+    line-height: 1.55;
+    color: var(--sage-pale);
+    max-width: 800px;
+    margin-bottom: 48px;
+  }
+
+  .result-text strong {
+    color: var(--off-white);
+    font-weight: 600;
+  }
+
+  /* NEXT PROJECT */
+  .next-project {
+    padding: 80px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--near-black);
+    text-decoration: none;
+    transition: background 0.4s;
+    cursor: pointer;
+  }
+
+  .next-project:hover { background: #111411; }
+
+  .next-label {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--sage-deep);
+    margin-bottom: 12px;
+  }
+
+  .next-title {
+    font-size: clamp(28px, 4vw, 52px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--off-white);
+    line-height: 1;
+  }
+
+  .next-arrow {
+    font-size: 48px;
+    color: var(--sage-deep);
+    transition: transform 0.3s, color 0.3s;
+  }
+
+  .next-project:hover .next-arrow {
+    transform: translateX(12px);
+    color: var(--sage-light);
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--near-black);
+    padding: 24px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(168,185,169,0.08);
+  }
+
+  footer p {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--sage-deep);
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 20px 24px; }
+    .case-hero { padding: 0 24px 60px; }
+    .section { padding: 64px 24px; }
+    .divider { margin: 0 24px; }
+    .overview-grid { grid-template-columns: 1fr; gap: 40px; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .process-grid { grid-template-columns: 1fr; }
+    .screens-grid { grid-template-columns: 1fr; }
+    .insights-grid { grid-template-columns: 1fr; }
+    .screens-section { padding: 64px 24px; }
+    .result-section { padding: 64px 24px; }
+    .next-project { padding: 48px 24px; }
+    footer { padding: 20px 24px; flex-direction: column; gap: 8px; }
+    .case-number { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">Weird</a>
+  <div class="nav-right">
+    <a href="index.html#works" class="nav-back">All Works</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="case-hero">
+  <div class="hero-bg"></div>
+  <div class="hero-illustration">
+    <svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Potemkin stairs stylized -->
+      <rect x="280" y="400" width="240" height="12" fill="white"/>
+      <rect x="300" y="385" width="200" height="12" fill="white"/>
+      <rect x="320" y="370" width="160" height="12" fill="white"/>
+      <rect x="340" y="355" width="120" height="12" fill="white"/>
+      <rect x="360" y="340" width="80" height="12" fill="white"/>
+      <!-- Column -->
+      <rect x="380" y="160" width="40" height="180" fill="white"/>
+      <ellipse cx="400" cy="155" rx="44" ry="14" fill="white"/>
+      <rect x="370" y="335" width="60" height="18" fill="white"/>
+      <!-- Sea waves -->
+      <path d="M100 500 Q200 480 300 500 Q400 520 500 500 Q600 480 700 500" stroke="white" stroke-width="2" fill="none"/>
+      <path d="M100 520 Q200 500 300 520 Q400 540 500 520 Q600 500 700 520" stroke="white" stroke-width="1.5" fill="none" opacity="0.6"/>
+      <!-- Seagulls -->
+      <path d="M150 200 Q160 192 170 200" stroke="white" stroke-width="1.5" fill="none"/>
+      <path d="M200 180 Q212 172 224 180" stroke="white" stroke-width="1.5" fill="none"/>
+      <path d="M600 220 Q612 212 624 220" stroke="white" stroke-width="1.5" fill="none"/>
+    </svg>
+  </div>
+  <span class="case-number">01</span>
+
+  <p class="case-hero-eyebrow">Case Study — 01</p>
+  <h1 class="case-hero-title">Odessa Tour</h1>
+  <p class="case-hero-subtitle">
+    A tourism platform redesigned to help visitors discover the soul of Odessa — its architecture, culture, and sea — through a clear, immersive digital experience.
+  </p>
+
+  <div class="case-meta-row">
+    <div class="case-meta-item">
+      <span class="case-meta-label">Role</span>
+      <span class="case-meta-value">UX/UI Designer</span>
+    </div>
+    <div class="case-meta-item">
+      <span class="case-meta-label">Type</span>
+      <span class="case-meta-value">Tourism Website</span>
+    </div>
+    <div class="case-meta-item">
+      <span class="case-meta-label">Tools</span>
+      <span class="case-meta-value">Figma · FigJam</span>
+    </div>
+    <div class="case-meta-item">
+      <span class="case-meta-label">Year</span>
+      <span class="case-meta-value">2025</span>
+    </div>
+  </div>
+
+  <div class="scroll-hint">Scroll to explore</div>
+</div>
+
+<!-- OVERVIEW -->
+<section class="section">
+  <div class="section-eyebrow">Overview</div>
+  <div class="overview-grid">
+    <div class="overview-left">
+      <h2>The Problem</h2>
+      <p>Tourists had no reliable, beautifully designed digital entry point into the city. Existing resources were outdated, fragmented, and lacked emotional storytelling.</p>
+    </div>
+    <div class="overview-right">
+      <p>
+        Odessa is a city of contrasts — baroque architecture next to Soviet courtyards, the sea at every turn, a unique mix of cultures. But <strong>the digital experience of visiting Odessa didn't reflect any of that.</strong>
+      </p>
+      <p>
+        The goal was to create a tourism platform that felt as rich and layered as the city itself. One that helps visitors plan their trip, discover hidden spots, and understand what makes Odessa <strong>unlike anywhere else</strong>.
+      </p>
+      <p>
+        I focused on structuring information in a way that mirrors how people actually explore a new city — starting with a feeling, then a neighborhood, then a specific place.
+      </p>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <span class="stat-number">12</span>
+      <span class="stat-label">User interviews conducted</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-number">3</span>
+      <span class="stat-label">Key user personas defined</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-number">47</span>
+      <span class="stat-label">Screens designed</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-number">+62%</span>
+      <span class="stat-label">Task completion in usability test</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PROCESS -->
+<section class="section">
+  <div class="section-eyebrow">Design Process</div>
+  <div class="process-grid">
+    <div class="process-card">
+      <p class="process-card-num">Step 01</p>
+      <h3 class="process-card-title">Research & Discovery</h3>
+      <p class="process-card-text">Conducted 12 interviews with tourists who had visited or planned to visit Odessa. Mapped pain points around information overload, unclear itineraries, and lack of local context. Built a competitive analysis of 8 tourism platforms.</p>
+      <span class="process-card-icon">🔍</span>
+    </div>
+    <div class="process-card">
+      <p class="process-card-num">Step 02</p>
+      <h3 class="process-card-title">Define & Structure</h3>
+      <p class="process-card-text">Synthesized research into 3 personas: the first-time tourist, the history enthusiast, and the solo traveler. Mapped their journeys to identify decision points and information needs at each stage of planning.</p>
+      <span class="process-card-icon">🗺️</span>
+    </div>
+    <div class="process-card">
+      <p class="process-card-num">Step 03</p>
+      <h3 class="process-card-title">Design & Iterate</h3>
+      <p class="process-card-text">Designed 47 screens across 5 core flows: city overview, neighborhood guides, attraction pages, itinerary builder, and local tips. Ran 2 rounds of usability testing with 8 participants each, iterating based on findings.</p>
+      <span class="process-card-icon">✦</span>
+    </div>
+  </div>
+</section>
+
+<!-- SCREENS MOCKUP -->
+<section class="screens-section">
+  <div class="section-eyebrow">Key Screens</div>
+
+  <div class="screens-grid">
+    <!-- Main screen -->
+    <div class="screen-card screen-card-main">
+      <div class="screen-mock" style="height: 460px;">
+        <div class="screen-mock-bar">
+          <div class="screen-mock-dot" style="background:#3D4A3E;"></div>
+          <div class="screen-mock-dot" style="background:#5C7A5D;"></div>
+          <div class="screen-mock-dot" style="background:#A8B9A9;"></div>
+        </div>
+        <div class="screen-mock-body">
+          <div class="mock-nav-row">
+            <div class="mock-nav-item" style="width:60px;"></div>
+            <div style="flex:1;"></div>
+            <div class="mock-nav-item" style="width:40px;"></div>
+            <div class="mock-nav-item" style="width:40px;"></div>
+            <div class="mock-nav-item" style="width:40px;"></div>
+          </div>
+          <div class="mock-hero-img" style="height:180px;">
+            <span>Hero — Odessa Skyline</span>
+          </div>
+          <div class="mock-heading"></div>
+          <div class="mock-text-line" style="width:90%;"></div>
+          <div class="mock-text-line" style="width:75%;"></div>
+          <div class="mock-btn"></div>
+          <div class="mock-card-row">
+            <div class="mock-card">
+              <div class="mock-card-img" style="height:60px;"></div>
+              <div class="mock-card-line" style="width:80%;"></div>
+              <div class="mock-card-line" style="width:55%;"></div>
+            </div>
+            <div class="mock-card">
+              <div class="mock-card-img" style="height:60px;"></div>
+              <div class="mock-card-line" style="width:80%;"></div>
+              <div class="mock-card-line" style="width:55%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="screen-label">Home Page</span>
+    </div>
+
+    <!-- Neighborhood -->
+    <div class="screen-card">
+      <div class="screen-mock" style="height:220px;">
+        <div class="screen-mock-bar">
+          <div class="screen-mock-dot" style="background:#3D4A3E;"></div>
+          <div class="screen-mock-dot" style="background:#5C7A5D;"></div>
+          <div class="screen-mock-dot" style="background:#A8B9A9;"></div>
+        </div>
+        <div class="screen-mock-body">
+          <div class="mock-hero-img" style="height:80px;"><span>Districts</span></div>
+          <div class="mock-heading" style="width:55%;"></div>
+          <div class="mock-text-line" style="width:85%;"></div>
+          <div class="mock-text-line" style="width:60%;"></div>
+        </div>
+      </div>
+      <span class="screen-label">Districts Guide</span>
+    </div>
+
+    <!-- Attraction -->
+    <div class="screen-card">
+      <div class="screen-mock" style="height:220px;">
+        <div class="screen-mock-bar">
+          <div class="screen-mock-dot" style="background:#3D4A3E;"></div>
+          <div class="screen-mock-dot" style="background:#5C7A5D;"></div>
+          <div class="screen-mock-dot" style="background:#A8B9A9;"></div>
+        </div>
+        <div class="screen-mock-body">
+          <div class="mock-hero-img" style="height:80px;"><span>Attraction</span></div>
+          <div class="mock-heading" style="width:65%;"></div>
+          <div class="mock-text-line" style="width:90%;"></div>
+          <div class="mock-btn" style="width:80px; height:22px;"></div>
+        </div>
+      </div>
+      <span class="screen-label">Attraction Detail</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- KEY INSIGHTS -->
+<section class="section">
+  <div class="section-eyebrow">Key Insights</div>
+  <div class="insights-grid">
+    <div class="insight-card">
+      <span class="insight-tag">Finding 01</span>
+      <h3 class="insight-title">Emotion before information</h3>
+      <p class="insight-text">Users don't open a tourism site looking for facts. They're looking to feel something. Leading with atmosphere and story — not lists of attractions — increased engagement and time on page significantly.</p>
+    </div>
+    <div class="insight-card">
+      <span class="insight-tag">Finding 02</span>
+      <h3 class="insight-title">Neighborhoods, not categories</h3>
+      <p class="insight-text">Tourists think spatially. Organizing content by district rather than by type (museums, restaurants, parks) matched their mental model and reduced navigation errors by 40%.</p>
+    </div>
+    <div class="insight-card">
+      <span class="insight-tag">Finding 03</span>
+      <h3 class="insight-title">Trust through local voice</h3>
+      <p class="insight-text">Users trusted recommendations more when they came with a local perspective. Adding short "why locals love this" notes to each attraction significantly boosted perceived credibility.</p>
+    </div>
+    <div class="insight-card">
+      <span class="insight-tag">Finding 04</span>
+      <h3 class="insight-title">The itinerary is the MVP</h3>
+      <p class="insight-text">The most-requested feature wasn't a map or gallery — it was the ability to build and save a personal itinerary. Users wanted the site to think with them, not just inform them.</p>
+    </div>
+  </div>
+</section>
+
+<!-- RESULT -->
+<div class="result-section">
+  <div class="section-eyebrow">Result</div>
+  <p class="result-text">
+    The redesigned platform reduced <strong>time-to-decision</strong> for first-time visitors by making emotional connection the entry point. Usability testing showed a <strong>62% improvement</strong> in task completion and near-zero navigation errors across the core user flows. The project confirmed that tourism design lives or dies by how well it translates <strong>a city's personality into structure.</strong>
+  </p>
+</div>
+
+<!-- NEXT PROJECT -->
+<a href="guitar-shop.html" class="next-project">
+  <div>
+    <p class="next-label">Next Case Study</p>
+    <h2 class="next-title">Guitar Shop</h2>
+  </div>
+  <span class="next-arrow">→</span>
+</a>
+
+<footer>
+  <p>© 2025 Weird</p>
+  <p>UX/UI Designer · Kyiv</p>
+</footer>
+
+<script>
+  const nav = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  });
+</script>
+
+</body>
+</html>

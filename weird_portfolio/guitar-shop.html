@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guitar Shop — Case Study · Weird</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --sage-deep: #3D4A3E;
+    --sage-mid: #6B7D6C;
+    --sage-light: #A8B9A9;
+    --sage-pale: #D4DDD5;
+    --sage-bg: #E8EEE9;
+    --near-black: #1A1F1A;
+    --off-white: #F2F5F2;
+    --warm: #7A6B3E;
+    --warm-light: #B5A47A;
+    --warm-pale: #E8DFC8;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background-color: var(--sage-bg);
+    color: var(--near-black);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 48px;
+    background: rgba(26,21,16,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s;
+  }
+
+  nav.scrolled { border-bottom-color: rgba(122,107,62,0.2); }
+
+  .nav-logo {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--off-white);
+    text-decoration: none;
+  }
+
+  .nav-back {
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--warm-light);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.3s;
+  }
+
+  .nav-back:hover { color: var(--off-white); }
+  .nav-back::before { content: '←'; font-size: 14px; }
+
+  /* HERO */
+  .case-hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 48px 80px;
+    position: relative;
+    overflow: hidden;
+    background: #0F0D08;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 75% 35%, rgba(122,107,62,0.2) 0%, transparent 55%),
+      radial-gradient(ellipse at 15% 75%, rgba(61,45,20,0.35) 0%, transparent 50%);
+  }
+
+  .hero-illustration {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 55%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.07;
+    pointer-events: none;
+  }
+
+  .case-number {
+    position: absolute;
+    top: 120px;
+    right: 48px;
+    font-size: clamp(100px, 15vw, 180px);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: rgba(181,164,122,0.04);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .case-meta-row {
+    display: flex;
+    gap: 48px;
+    margin-bottom: 32px;
+    position: relative;
+    z-index: 2;
+    flex-wrap: wrap;
+  }
+
+  .case-meta-item { display: flex; flex-direction: column; gap: 4px; }
+
+  .case-meta-label {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--warm);
+  }
+
+  .case-meta-value {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--warm-light);
+    letter-spacing: 0.04em;
+  }
+
+  .case-hero-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--warm);
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .case-hero-title {
+    font-size: clamp(48px, 7vw, 100px);
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    color: var(--off-white);
+    margin-bottom: 24px;
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+  }
+
+  .case-hero-subtitle {
+    font-size: 18px;
+    font-weight: 300;
+    line-height: 1.6;
+    color: var(--warm-light);
+    max-width: 560px;
+    position: relative;
+    z-index: 2;
+    margin-bottom: 48px;
+  }
+
+  .scroll-hint {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--warm);
+    position: relative;
+    z-index: 2;
+  }
+
+  .scroll-hint::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--warm);
+  }
+
+  /* SECTIONS */
+  .section { padding: 100px 48px; }
+
+  .section-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--sage-light);
+    margin-bottom: 48px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .section-eyebrow::before {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 1px;
+    background: var(--sage-pale);
+  }
+
+  .divider { height: 1px; background: var(--sage-pale); margin: 0 48px; }
+
+  /* OVERVIEW */
+  .overview-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .overview-left h2 {
+    font-size: clamp(28px, 3.5vw, 44px);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--near-black);
+    margin-bottom: 24px;
+  }
+
+  .overview-left p {
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--sage-mid);
+    font-weight: 300;
+  }
+
+  .overview-right p {
+    font-size: 16px;
+    line-height: 1.85;
+    color: var(--sage-mid);
+    font-weight: 300;
+    margin-bottom: 20px;
+  }
+
+  .overview-right p strong {
+    color: var(--sage-deep);
+    font-weight: 500;
+  }
+
+  /* STATS */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    margin-top: 80px;
+  }
+
+  .stat-card {
+    background: var(--near-black);
+    padding: 40px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .stat-number {
+    font-size: clamp(36px, 4vw, 56px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--warm-light);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--sage-deep);
+    font-weight: 400;
+    margin-top: 4px;
+  }
+
+  /* CHALLENGE */
+  .challenge-section {
+    background: #F5F0E8;
+    padding: 100px 48px;
+  }
+
+  .challenge-section .section-eyebrow { color: var(--warm); }
+  .challenge-section .section-eyebrow::before { background: var(--warm-pale); }
+
+  .challenge-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin-top: 60px;
+  }
+
+  .challenge-card {
+    background: var(--warm-pale);
+    padding: 48px 40px;
+    position: relative;
+    transition: background 0.3s;
+  }
+
+  .challenge-card:nth-child(even) { background: #EDE5CC; }
+  .challenge-card:hover { background: #DDD0AA; }
+
+  .challenge-card-num {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--warm);
+    margin-bottom: 24px;
+  }
+
+  .challenge-card-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #3A2E10;
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+
+  .challenge-card-text {
+    font-size: 14px;
+    line-height: 1.75;
+    color: #7A6B3E;
+    font-weight: 300;
+  }
+
+  /* SCREENS */
+  .screens-section {
+    background: #0F0D08;
+    padding: 100px 48px;
+  }
+
+  .screens-section .section-eyebrow { color: rgba(122,107,62,0.5); }
+  .screens-section .section-eyebrow::before { background: rgba(122,107,62,0.2); }
+
+  .screens-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin-top: 60px;
+  }
+
+  .screen-card {
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .screen-card-wide {
+    grid-column: span 2;
+  }
+
+  .screen-mock {
+    width: 100%;
+    background: #1A1506;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .screen-mock-bar {
+    height: 28px;
+    background: #100E04;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 6px;
+  }
+
+  .screen-mock-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .screen-mock-body {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .mock-hero-img {
+    width: 100%;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(181,164,122,0.3);
+  }
+
+  .mock-heading {
+    height: 14px;
+    border-radius: 3px;
+    background: rgba(242,235,215,0.6);
+    width: 65%;
+  }
+
+  .mock-text-line {
+    height: 7px;
+    border-radius: 3px;
+    background: rgba(181,164,122,0.2);
+  }
+
+  .mock-card-row {
+    display: grid;
+    gap: 8px;
+  }
+
+  .mock-card {
+    background: rgba(181,164,122,0.06);
+    border-radius: 3px;
+    padding: 10px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .mock-card-img-sm {
+    width: 44px;
+    height: 44px;
+    border-radius: 2px;
+    background: linear-gradient(135deg, #4A3A18, #7A6B3E);
+    flex-shrink: 0;
+  }
+
+  .mock-card-lines {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .mock-card-line {
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(181,164,122,0.2);
+  }
+
+  .mock-price {
+    height: 10px;
+    width: 48px;
+    border-radius: 3px;
+    background: rgba(181,164,122,0.4);
+  }
+
+  .mock-btn {
+    height: 28px;
+    border-radius: 2px;
+    background: #7A6B3E;
+    margin-top: 4px;
+  }
+
+  .mock-filter-row {
+    display: flex;
+    gap: 6px;
+  }
+
+  .mock-filter-chip {
+    height: 22px;
+    border-radius: 11px;
+    background: rgba(181,164,122,0.12);
+    border: 1px solid rgba(181,164,122,0.15);
+  }
+
+  .screen-label {
+    position: absolute;
+    bottom: 12px;
+    left: 16px;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--warm);
+  }
+
+  /* INSIGHTS */
+  .insights-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin-top: 60px;
+  }
+
+  .insight-card {
+    background: var(--off-white);
+    padding: 48px;
+    transition: background 0.3s;
+  }
+
+  .insight-card:hover { background: var(--sage-pale); }
+
+  .insight-tag {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border: 1px solid var(--sage-pale);
+    color: var(--sage-mid);
+    margin-bottom: 24px;
+    border-radius: 1px;
+  }
+
+  .insight-title {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    color: var(--near-black);
+    margin-bottom: 12px;
+  }
+
+  .insight-text {
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--sage-mid);
+    font-weight: 300;
+  }
+
+  /* RESULT */
+  .result-section {
+    padding: 100px 48px;
+    background: #3A2E10;
+    color: var(--off-white);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .result-section::before {
+    content: 'RESULT';
+    position: absolute;
+    right: -20px;
+    bottom: -20px;
+    font-size: clamp(80px, 12vw, 160px);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    color: rgba(255,255,255,0.02);
+    pointer-events: none;
+    line-height: 1;
+  }
+
+  .result-section .section-eyebrow { color: rgba(181,164,122,0.4); }
+  .result-section .section-eyebrow::before { background: rgba(181,164,122,0.15); }
+
+  .result-text {
+    font-size: clamp(22px, 3vw, 36px);
+    font-weight: 300;
+    line-height: 1.55;
+    color: var(--warm-pale);
+    max-width: 800px;
+    margin-bottom: 48px;
+  }
+
+  .result-text strong {
+    color: var(--off-white);
+    font-weight: 600;
+  }
+
+  /* NEXT */
+  .next-project {
+    padding: 80px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--near-black);
+    text-decoration: none;
+    transition: background 0.4s;
+    cursor: pointer;
+  }
+
+  .next-project:hover { background: #111411; }
+
+  .next-label {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--sage-deep);
+    margin-bottom: 12px;
+  }
+
+  .next-title {
+    font-size: clamp(28px, 4vw, 52px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--off-white);
+    line-height: 1;
+  }
+
+  .next-arrow {
+    font-size: 48px;
+    color: var(--sage-deep);
+    transition: transform 0.3s, color 0.3s;
+  }
+
+  .next-project:hover .next-arrow {
+    transform: translateX(12px);
+    color: var(--sage-light);
+  }
+
+  footer {
+    background: var(--near-black);
+    padding: 24px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(168,185,169,0.08);
+  }
+
+  footer p {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--sage-deep);
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 20px 24px; }
+    .case-hero { padding: 0 24px 60px; }
+    .section { padding: 64px 24px; }
+    .divider { margin: 0 24px; }
+    .overview-grid { grid-template-columns: 1fr; gap: 40px; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .challenge-grid { grid-template-columns: 1fr; }
+    .screens-grid { grid-template-columns: 1fr; }
+    .screen-card-wide { grid-column: span 1; }
+    .insights-grid { grid-template-columns: 1fr; }
+    .challenge-section { padding: 64px 24px; }
+    .screens-section { padding: 64px 24px; }
+    .result-section { padding: 64px 24px; }
+    .next-project { padding: 48px 24px; }
+    footer { padding: 20px 24px; flex-direction: column; gap: 8px; }
+    .case-number { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">Weird</a>
+  <a href="index.html#works" class="nav-back">All Works</a>
+</nav>
+
+<!-- HERO -->
+<div class="case-hero">
+  <div class="hero-bg"></div>
+
+  <div class="hero-illustration">
+    <svg width="700" height="600" viewBox="0 0 700 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Guitar body -->
+      <ellipse cx="350" cy="420" rx="110" ry="140" fill="white"/>
+      <ellipse cx="350" cy="260" rx="80" ry="100" fill="white"/>
+      <!-- Waist -->
+      <rect x="290" y="330" width="120" height="60" fill="white"/>
+      <!-- Neck -->
+      <rect x="336" y="80" width="28" height="220" fill="white"/>
+      <!-- Headstock -->
+      <rect x="320" y="50" width="60" height="40" rx="4" fill="white"/>
+      <!-- Tuners -->
+      <circle cx="325" cy="58" r="5" fill="white"/>
+      <circle cx="325" cy="72" r="5" fill="white"/>
+      <circle cx="375" cy="58" r="5" fill="white"/>
+      <circle cx="375" cy="72" r="5" fill="white"/>
+      <!-- Sound hole -->
+      <circle cx="350" cy="420" r="36" fill="#0F0D08"/>
+      <!-- Strings -->
+      <line x1="344" y1="80" x2="330" y2="560" stroke="#0F0D08" stroke-width="1.2"/>
+      <line x1="348" y1="80" x2="340" y2="560" stroke="#0F0D08" stroke-width="1.2"/>
+      <line x1="352" y1="80" x2="350" y2="560" stroke="#0F0D08" stroke-width="1.2"/>
+      <line x1="356" y1="80" x2="360" y2="560" stroke="#0F0D08" stroke-width="1.2"/>
+      <line x1="360" y1="80" x2="370" y2="560" stroke="#0F0D08" stroke-width="1.2"/>
+      <!-- Frets -->
+      <line x1="292" y1="140" x2="408" y2="140" stroke="#0F0D08" stroke-width="1.5"/>
+      <line x1="292" y1="175" x2="408" y2="175" stroke="#0F0D08" stroke-width="1.5"/>
+      <line x1="292" y1="210" x2="408" y2="210" stroke="#0F0D08" stroke-width="1.5"/>
+      <line x1="292" y1="245" x2="408" y2="245" stroke="#0F0D08" stroke-width="1.5"/>
+      <line x1="292" y1="280" x2="408" y2="280" stroke="#0F0D08" stroke-width="1.5"/>
+    </svg>
+  </div>
+
+  <span class="case-number">02</span>
+
+  <p class="case-hero-eyebrow">Case Study — 02</p>
+  <h1 class="case-hero-title">Guitar Shop</h1>
+  <p class="case-hero-subtitle">
+    An e-commerce redesign for a specialty guitar store — making it easier for musicians to find their instrument through better filtering, richer product pages, and a checkout flow that doesn't get in the way.
+  </p>
+
+  <div class="case-meta-row">
+    <div class="case-meta-item">
+      <span class="case-meta-label">Role</span>
+      <span class="case-meta-value">UX/UI Designer</span>
+    </div>
+    <div class="case-meta-item">
+      <span class="case-meta-label">Type</span>
+      <span class="case-meta-value">E-commerce</span>
+    </div>
+    <div class="case-meta-item">
+      <span class="case-meta-label">Tools</span>
+      <span class="case-meta-value">Figma · Maze</span>
+    </div>
+    <div class="case-meta-item">
+      <span class="case-meta-label">Year</span>
+      <span class="case-meta-value">2025</span>
+    </div>
+  </div>
+
+  <div class="scroll-hint">Scroll to explore</div>
+</div>
+
+<!-- OVERVIEW -->
+<section class="section">
+  <div class="section-eyebrow">Overview</div>
+  <div class="overview-grid">
+    <div class="overview-left">
+      <h2>The Problem</h2>
+      <p>Musicians are highly specific buyers. The existing store made it nearly impossible to filter by what actually matters — body type, tonewood, pickup configuration — leading to overwhelm and cart abandonment.</p>
+    </div>
+    <div class="overview-right">
+      <p>
+        Buying a guitar online is an act of faith. You can't feel the neck, hear the resonance, smell the wood. That means the <strong>product page has to do all of that work</strong> — and then some.
+      </p>
+      <p>
+        The original store had a generic e-commerce structure copied from furniture or clothing retail. It didn't speak to musicians. The filtering was shallow, product photos were inconsistent, and the specs were buried in a collapsed accordion that most users never opened.
+      </p>
+      <p>
+        The redesign focused on three things: <strong>smarter filtering</strong> that matches how musicians actually think about instruments, <strong>richer product pages</strong> that build confidence, and a <strong>frictionless checkout</strong> that doesn't interrupt the purchase decision.
+      </p>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <span class="stat-number">9</span>
+      <span class="stat-label">Musician interviews</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-number">–34%</span>
+      <span class="stat-label">Drop-off on product page</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-number">58</span>
+      <span class="stat-label">Screens designed</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-number">+41%</span>
+      <span class="stat-label">Add-to-cart rate in testing</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CHALLENGES -->
+<div class="challenge-section">
+  <div class="section-eyebrow">Key Challenges</div>
+  <div class="challenge-grid">
+    <div class="challenge-card">
+      <p class="challenge-card-num">Challenge 01</p>
+      <h3 class="challenge-card-title">The expert–beginner gap</h3>
+      <p class="challenge-card-text">The store served both seasoned players who know exactly what they want and beginners who don't know what to ask for. The same interface had to work for both — without dumbing down for experts or overwhelming newcomers.</p>
+    </div>
+    <div class="challenge-card">
+      <p class="challenge-card-num">Challenge 02</p>
+      <h3 class="challenge-card-title">Filters that don't filter</h3>
+      <p class="challenge-card-text">Existing filters were: Brand, Price, Color. Musicians think in terms of body shape, scale length, pickup type, tonewoods, and playing style. Building a filter system that matched their vocabulary was the central design challenge.</p>
+    </div>
+    <div class="challenge-card">
+      <p class="challenge-card-num">Challenge 03</p>
+      <h3 class="challenge-card-title">Trust without touch</h3>
+      <p class="challenge-card-text">Guitars are tactile objects. Users repeatedly said "I need to hold it to know." The design had to substitute physical experience with rich visual storytelling, detailed specs, sound samples, and authentic reviews.</p>
+    </div>
+    <div class="challenge-card">
+      <p class="challenge-card-num">Challenge 04</p>
+      <h3 class="challenge-card-title">Checkout anxiety</h3>
+      <p class="challenge-card-text">Instruments are high-consideration purchases. A 5-step checkout with forced account creation at €800+ was killing conversions. The new flow was reduced to 3 steps with guest checkout and a persistent order summary visible at all times.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SCREENS -->
+<div class="screens-section">
+  <div class="section-eyebrow">Key Screens</div>
+  <div class="screens-grid">
+
+    <!-- Catalog wide -->
+    <div class="screen-card screen-card-wide">
+      <div class="screen-mock" style="height: 340px;">
+        <div class="screen-mock-bar">
+          <div class="screen-mock-dot" style="background:#4A3A18;"></div>
+          <div class="screen-mock-dot" style="background:#7A6B3E;"></div>
+          <div class="screen-mock-dot" style="background:#B5A47A;"></div>
+        </div>
+        <div style="display:flex; height:100%;">
+          <!-- Sidebar filters -->
+          <div style="width:160px; background:#100E04; padding:16px; display:flex; flex-direction:column; gap:12px; flex-shrink:0;">
+            <div style="height:8px; width:80px; border-radius:4px; background:rgba(181,164,122,0.5);"></div>
+            <div style="height:1px; background:rgba(181,164,122,0.1);"></div>
+            <div style="height:6px; width:60px; border-radius:3px; background:rgba(181,164,122,0.2);"></div>
+            <div style="height:6px; width:90px; border-radius:3px; background:rgba(181,164,122,0.15);"></div>
+            <div style="height:6px; width:70px; border-radius:3px; background:rgba(181,164,122,0.15);"></div>
+            <div style="height:1px; background:rgba(181,164,122,0.1); margin-top:4px;"></div>
+            <div style="height:6px; width:55px; border-radius:3px; background:rgba(181,164,122,0.2);"></div>
+            <div style="height:6px; width:80px; border-radius:3px; background:rgba(181,164,122,0.12);"></div>
+            <div style="height:6px; width:65px; border-radius:3px; background:rgba(181,164,122,0.12);"></div>
+            <div style="height:6px; width:72px; border-radius:3px; background:rgba(181,164,122,0.12);"></div>
+          </div>
+          <!-- Product grid -->
+          <div class="screen-mock-body" style="flex:1;">
+            <div class="mock-filter-row">
+              <div class="mock-filter-chip" style="width:60px;"></div>
+              <div class="mock-filter-chip" style="width:80px;"></div>
+              <div class="mock-filter-chip" style="width:50px;"></div>
+              <div class="mock-filter-chip" style="width:70px;"></div>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;">
+              <div class="mock-card" style="flex-direction:column; padding:10px; gap:8px;">
+                <div style="height:70px; border-radius:3px; background:linear-gradient(135deg,#4A3A18,#7A6B3E);"></div>
+                <div class="mock-card-line" style="width:85%;"></div>
+                <div class="mock-price"></div>
+              </div>
+              <div class="mock-card" style="flex-direction:column; padding:10px; gap:8px;">
+                <div style="height:70px; border-radius:3px; background:linear-gradient(135deg,#2A1E08,#5A4A28);"></div>
+                <div class="mock-card-line" style="width:75%;"></div>
+                <div class="mock-price"></div>
+              </div>
+              <div class="mock-card" style="flex-direction:column; padding:10px; gap:8px;">
+                <div style="height:70px; border-radius:3px; background:linear-gradient(135deg,#3E3010,#6B5A30);"></div>
+                <div class="mock-card-line" style="width:90%;"></div>
+                <div class="mock-price"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="screen-label">Catalog + Filters</span>
+    </div>
+
+    <!-- Product page -->
+    <div class="screen-card">
+      <div class="screen-mock" style="height:340px;">
+        <div class="screen-mock-bar">
+          <div class="screen-mock-dot" style="background:#4A3A18;"></div>
+          <div class="screen-mock-dot" style="background:#7A6B3E;"></div>
+          <div class="screen-mock-dot" style="background:#B5A47A;"></div>
+        </div>
+        <div class="screen-mock-body">
+          <div class="mock-hero-img" style="height:130px; background:linear-gradient(160deg,#2A1E08,#5A4A28,#7A6B3E);">
+            <span>Guitar Detail</span>
+          </div>
+          <div class="mock-heading" style="width:80%;"></div>
+          <div class="mock-text-line" style="width:50%;"></div>
+          <div style="display:flex; gap:6px; margin:4px 0;">
+            <div style="height:20px; width:56px; border-radius:10px; background:rgba(181,164,122,0.15); border:1px solid rgba(181,164,122,0.2);"></div>
+            <div style="height:20px; width:56px; border-radius:10px; background:rgba(181,164,122,0.08); border:1px solid rgba(181,164,122,0.1);"></div>
+          </div>
+          <div class="mock-btn" style="width:100%;"></div>
+        </div>
+      </div>
+      <span class="screen-label">Product Page</span>
+    </div>
+
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- INSIGHTS -->
+<section class="section">
+  <div class="section-eyebrow">Key Insights</div>
+  <div class="insights-grid">
+    <div class="insight-card">
+      <span class="insight-tag">Finding 01</span>
+      <h3 class="insight-title">Vocabulary is the interface</h3>
+      <p class="insight-text">When filters used musician vocabulary (Stratocaster-style, Humbucker, Mahogany body) instead of generic terms, users found their target product 3× faster and reported significantly higher confidence in their choice.</p>
+    </div>
+    <div class="insight-card">
+      <span class="insight-tag">Finding 02</span>
+      <h3 class="insight-title">Sound samples = purchase confidence</h3>
+      <p class="insight-text">Adding a short audio sample to each product page — even just 10 seconds — was the single highest-impact change in testing. Users who heard the guitar were twice as likely to add it to the cart.</p>
+    </div>
+    <div class="insight-card">
+      <span class="insight-tag">Finding 03</span>
+      <h3 class="insight-title">Beginners need a guide, not a catalog</h3>
+      <p class="insight-text">New players were paralyzed by choice. A "Help me choose" flow that asked 4 questions (genre, budget, body preference, skill level) and surfaced 3 recommendations outperformed the standard catalog for this segment.</p>
+    </div>
+    <div class="insight-card">
+      <span class="insight-tag">Finding 04</span>
+      <h3 class="insight-title">Specs belong above the fold</h3>
+      <p class="insight-text">83% of users in testing never opened the collapsed spec accordion. Moving key specs (scale length, body material, pickups) into the hero section increased engagement with that content from 17% to 74%.</p>
+    </div>
+  </div>
+</section>
+
+<!-- RESULT -->
+<div class="result-section">
+  <div class="section-eyebrow">Result</div>
+  <p class="result-text">
+    Smarter filtering reduced time-to-product from an average of <strong>4.2 minutes to 1.8 minutes</strong>. The add-to-cart rate in usability testing increased by <strong>41%</strong>. The redesigned checkout (3 steps, guest option, persistent summary) reduced abandonment by <strong>34%</strong> compared to the original flow. The project confirmed that e-commerce design fails when it ignores <strong>the specific language and logic of its audience.</strong>
+  </p>
+</div>
+
+<!-- NEXT -->
+<a href="odessa-tour.html" class="next-project">
+  <div>
+    <p class="next-label">Previous Case Study</p>
+    <h2 class="next-title">Odessa Tour</h2>
+  </div>
+  <span class="next-arrow">→</span>
+</a>
+
+<footer>
+  <p>© 2025 Weird</p>
+  <p>UX/UI Designer · Kyiv</p>
+</footer>
+
+<script>
+  const nav = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  });
+</script>
+
+</body>
+</html>
